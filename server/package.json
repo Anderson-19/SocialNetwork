@@ -1,0 +1,29 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Anderson-19/SocialNetwork.git"
+  },
+  "author": "Anderson Gutierrez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Anderson-19/SocialNetwork/issues"
+  },
+  "homepage": "https://github.com/Anderson-19/SocialNetwork#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.2"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-fileupload": "^1.5.0",
+    "socket.io": "^4.7.5"
+  }
+}
