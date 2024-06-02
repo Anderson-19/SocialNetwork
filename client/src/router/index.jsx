@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 
 import { Login, Register } from "../auth/index";
 import { App } from "../App";
-import { Home, Likes, Comments, Bookmarks } from "../dashboard/pages"
+import { Home, Likes, Comments, Bookmarks, Profile } from "../dashboard/pages"
 
 export const router = createBrowserRouter([
     {
@@ -32,6 +32,10 @@ export const router = createBrowserRouter([
             {
                 path: '/likes',
                 element: <Likes />
+            },
+            {
+                path: '/profile/:username',
+                element: <Profile />
             }
         ]
     }
