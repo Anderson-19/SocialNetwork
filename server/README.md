@@ -1,5 +1,3 @@
-# Server
-
 ## Correr el server en desarrollo
 
 1. Clonar repositorio
