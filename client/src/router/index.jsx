@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 
 import { Login, Register } from "../auth/index";
 import { App } from "../App";
-import { Home } from "../dashboard/Home"
+import { Home, Likes, Comments, Bookmarks } from "../dashboard/pages"
 
 export const router = createBrowserRouter([
     {
@@ -20,6 +20,18 @@ export const router = createBrowserRouter([
             {
                 path: '/home',
                 element: <Home />
+            },
+            {
+                path: '/comments/:username',
+                element: <Comments />
+            },
+            {
+                path: '/bookmarks',
+                element: <Bookmarks />
+            },
+            {
+                path: '/likes',
+                element: <Likes />
             }
         ]
     }
