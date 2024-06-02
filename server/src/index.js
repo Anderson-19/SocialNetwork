@@ -11,6 +11,7 @@ const postBookmarksRoutes = require('./routes/post-bookmarks');
 const postCommentsRoutes = require('./routes/post-comments');
 const postForwardedRoutes = require('./routes/post-forwarded');
 const postlikesRoutes = require('./routes/post-likes');
+const chatRoutes = require('./routes/chat');
 
 const { app, server } = require("./socket/socket.js");
 
@@ -32,6 +33,7 @@ app.use("/api/post/like", postlikesRoutes);
 app.use("/api/post/forwarded", postForwardedRoutes);
 app.use("/api/post/comment", postCommentsRoutes);
 app.use("/api/post/bookmark", postBookmarksRoutes);
+app.use("/api/messages", chatRoutes);
 
 server.listen(PORT, () => {
 	console.log(`Server Running on port ${PORT}`);
