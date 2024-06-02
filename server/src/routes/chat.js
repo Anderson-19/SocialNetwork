@@ -4,7 +4,7 @@ const { check } = require('express-validator');
 const { existsUserID } = require('../helpers/index');
 
 const { validateField } = require('../middlewares/index');
-const { getMessages, sendMessage } = require('../controllers/index');
+const { getMessages, sendMessage } = require('../controllers/chat');
 
 const router = Router();
 
