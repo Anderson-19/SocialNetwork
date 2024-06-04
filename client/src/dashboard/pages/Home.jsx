@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
 import { useUserStore } from '../../store'
-import { createPost, getPostsOfFollowings } from '../../api';
+import { createPost, getPostsOfFollowings, getPosts } from '../../api';
 import { Card, PreviewImage } from '../components';
 
 import { getComments } from '../../api/post-comments';
@@ -15,6 +15,7 @@ import './styles.css';
 export const Home = () => {
 
   const [posts, setPosts] = useState([]);
+  const [allPosts, setAllPosts] = useState([]);
   const [comments, setComments] = useState([]);
   const [validate, setValidate] = useState('');
   const [selectedFile, setSelectedFile] = useState();
@@ -59,6 +60,12 @@ export const Home = () => {
   }, [changeOfInteraction.likes, changeOfInteraction.forwarded, changeOfInteraction.bookmarks]);
 
   useEffect(() => {
+    getPosts(user.token)
+      .then((res) => setAllPosts(res.posts))
+      .catch(console.log)
+  }, [changeOfInteraction.likes, changeOfInteraction.forwarded, changeOfInteraction.bookmarks]);
+
+  useEffect(() => {
     getComments(user.token)
       .then((res) => setComments(res.comments))
       .catch(console.log)
@@ -86,7 +93,7 @@ export const Home = () => {
   }
 
   return (
-    <div className="w-full h-full justify-center overflow-x-hidden overflow-y-scroll scroll-ui shadow-md border border-y-0 border-gray-800 sm:min-w-fit">
+    <div className="w-full h-full justify-center overflow-x-hidden overflow-y-scroll scroll-ui shadow-md border border-y-0 border-gray-800">
 
       <hr className="border-gray-800" />
       <div className="flex">
@@ -120,7 +127,7 @@ export const Home = () => {
 
         <hr className="border-gray-800" />
 
-        <PreviewImage selectedFile={selectedFile} setSelectedFile={setSelectedFile} validate={validate}/>
+        <PreviewImage selectedFile={selectedFile} setSelectedFile={setSelectedFile} validate={validate} />
 
         <div className="flex">
           <div className="w-10"></div>
@@ -154,7 +161,7 @@ export const Home = () => {
 
       <hr className="border-gray-800" />
 
-      {posts &&
+      {posts.length > 0 ? (
         posts?.map((post) => (
           <div key={post.post_id} className={`${post.user_id === user.uid ? 'hidden' : ''}`}>
             <Card
@@ -165,7 +172,28 @@ export const Home = () => {
             />
           </div>
         ))
-      }
+      ) : (
+        <>
+          {allPosts.length > 0 ? (
+            allPosts?.map((post) => (
+              <div key={post.post_id} className={`${post.user_id === user.uid ? 'hidden' : ''}`}>
+                <Card
+                  post={post}
+                  interactionLikes={interactionLikes}
+                  interactionForwarded={interactionForwarded}
+                  interactionBookmarks={interactionBookmarks}
+                />
+              </div>
+            ))
+          ) : (
+            <div className="text-center mt-36">
+              <p className="text-4xl mb-4">You don't have post yet</p>
+              <p>When you publish any post it appears here.</p>
+            </div>
+          )}
+        </>
+      )}
+
     </div>
   )
 }

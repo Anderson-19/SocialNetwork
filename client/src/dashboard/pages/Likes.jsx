@@ -25,6 +25,8 @@ export const Likes = () => {
       .catch(console.log)
   }, [changeOfInteraction.likes, changeOfInteraction.forwarded, changeOfInteraction.bookmarks]);
 
+  console.log(likesByUser.length);
+
   const interactionLikes = () => {
     setChangeOfInteraction({
       ...changeOfInteraction,
@@ -47,7 +49,7 @@ export const Likes = () => {
   }
 
   return (
-    <div className="w-full h-full justify-center overflow-x-hidden overflow-y-scroll scroll-ui bg-white shadow-md border border-y-0 border-gray-800 sm:min-w-fit">
+    <div className="w-full h-full justify-center overflow-x-hidden overflow-y-scroll scroll-ui bg-white shadow-md border border-y-0 border-gray-800">
       <div className="flex">
         <div className="justify-start px-4 py-2 mx-2 cursor-pointer">
           <IoArrowBack size={25} onClick={() => nav(localStorage.getItem('pathHome'))} />
@@ -60,7 +62,7 @@ export const Likes = () => {
 
       <hr className="border-gray-800" />
 
-      {likesByUser &&
+      {likesByUser.length > 0 ? (
         likesByUser?.map((like) => (
           <div key={like.post_id} className={`${like.user_id === user.uid ? 'hidden' : ''}`}>
             <Card
@@ -72,6 +74,12 @@ export const Likes = () => {
             />
           </div>
         ))
+      ) : (
+        <div className="text-center mt-36">
+          <p className="text-4xl mb-4">You don't have likes yet</p>
+          <p>When you like any post it appears here.</p>
+        </div>
+      )
       }
     </div>
   )

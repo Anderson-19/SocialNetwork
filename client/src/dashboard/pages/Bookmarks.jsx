@@ -48,7 +48,7 @@ export const Bookmarks = () => {
   }
 
   return (
-    <div className="w-full h-full justify-center overflow-x-hidden overflow-y-scroll scroll-ui bg-white shadow-md border border-y-0 border-gray-800 sm:min-w-fit">
+    <div className="w-full h-full justify-center overflow-x-hidden overflow-y-scroll scroll-ui bg-white shadow-md border border-y-0 border-gray-800">
       <div className="flex">
         <div className="justify-start px-4 py-2 mx-2 cursor-pointer">
           <IoArrowBack size={25} onClick={() => nav(localStorage.getItem('pathHome'))} />
@@ -61,7 +61,8 @@ export const Bookmarks = () => {
 
       <hr className="border-gray-800" />
 
-      {bookmarksByUser &&
+      {bookmarksByUser.length > 0 ? (
+
         bookmarksByUser?.map((bookmark) => (
           <div key={bookmark.post_id} className={`${bookmark.user_id === user.uid ? 'hidden' : ''}`}>
             <Card
@@ -74,6 +75,12 @@ export const Bookmarks = () => {
             <div className="flex-1 px-4 py-2 mx-2" />
           </div>
         ))
+      ): (
+        <div className="text-center mt-36">
+          <p className="text-4xl mb-4">You don't have bookmarks post yet</p>
+          <p>When you bookmark any post it appears here.</p>
+        </div>
+      )
       }
     </div>
   )

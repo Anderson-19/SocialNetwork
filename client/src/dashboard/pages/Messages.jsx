@@ -46,7 +46,6 @@ export const Messages = () => {
   useEffect(() => {
 		socket?.on("newMessage", (newMessage) => {
 			newMessage.shouldShake = true;
-      console.log(newMessage);
 			setMessages([...messages, newMessage]);
 		});
 

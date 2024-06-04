@@ -88,7 +88,7 @@ export const Comments = () => {
     }
 
     return (
-        <div className="w-full h-full justify-center overflow-x-hidden overflow-y-scroll scroll-ui bg-white shadow-md border border-y-0 border-gray-800 sm:min-w-fit">
+        <div className="w-full h-full justify-center overflow-x-hidden overflow-y-scroll scroll-ui bg-white shadow-md border border-y-0 border-gray-800">
             <div className="flex">
                 <div className="justify-start px-4 py-2 mx-2 cursor-pointer">
                     <IoArrowBack size={25} onClick={() => nav(localStorage.getItem('pathHome'))} />

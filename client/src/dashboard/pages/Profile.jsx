@@ -8,7 +8,7 @@ import {
   IoLocationOutline
 } from "react-icons/io5";
 import { useLocation, useNavigate } from 'react-router-dom';
-import { /* useConversation,  */useUIStore, useUserStore } from '../../store';
+import { useConversation, useUIStore, useUserStore } from '../../store';
 import { followUser, getFollowersAndFollowing, getForwardedByUserId, getLikesByUserId, getPostsByUserId, getUserById, logout, unFollow } from '../../api';
 import { Card, ModalUser } from '../components';
 import { month } from '../../helpers';
@@ -31,7 +31,7 @@ export const Profile = () => {
   const { state, pathname } = useLocation();
   const nav = useNavigate();
   const setUser = useUserStore(state => state.setUser);
-  //const { setMessages, setSelectedConversation } = useConversation(state => state);
+  const { setMessages, setSelectedConversation } = useConversation(state => state);
   const { isSideModalPost, isSideModalEditUser, openModalEditUser } = useUIStore(state => state);
   const user = useUserStore(state => state.user);
 
@@ -157,7 +157,7 @@ export const Profile = () => {
           <div>
             <div className="flex bg-gray-100">
               <div className="justify-start px-4 py-2 mx-2 cursor-pointer">
-                <IoArrowBack size={25} onClick={() => nav(localStorage.getItem('pathHome'))}/> 
+                <IoArrowBack size={25} onClick={() => nav(localStorage.getItem('pathHome'))} />
               </div>
               <div className="mx-2">
                 <h2 className="mb-0 text-xl font-bold text-black">{data?.name} {data?.lastname}</h2>
@@ -168,8 +168,8 @@ export const Profile = () => {
                 onClick={() => {
                   logout(user);
                   setUser({ uid: '', name: '', email: '', lastname: '', username: '', avatar: '', password: '', token: '', isLogged: false });
-                  /* setMessages([]);
-                  setSelectedConversation(''); */
+                  setMessages([]);
+                  setSelectedConversation('');
                   nav('/');
                 }}
                 className={`${state?.user_id === user.uid ? 'h-1/2 whitespace-nowrap focus:outline-none focus:ring max-w-max border bg-transparent border-blue-500 text-blue-500 hover:border-blue-800 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-2 mt-2 ml-auto' : 'hidden'}`} >
@@ -180,13 +180,13 @@ export const Profile = () => {
 
             <hr className="border-gray-800" />
           </div>
-  
+
           <div>
             <div className="w-full flex bg-cover bg-no-repeat bg-center cursor-pointer" style={{ height: '200px', backgroundImage: `url(${data?.banner})` }}>
             </div>
             <div className="p-4 bg-gray-100">
               <div className="relative flex w-full">
-               
+
                 <div className="flex flex-1">
                   <div style={{ marginTop: '-6rem' }}>
                     <div style={{ height: '9rem', width: '9rem' }} className="md rounded-full relative avatar cursor-pointer">
@@ -194,7 +194,7 @@ export const Profile = () => {
                     </div>
                   </div>
                 </div>
-       
+
                 <div className="flex flex-col justify-end">
                   <button
                     onClick={openModalEditUser}
@@ -223,7 +223,7 @@ export const Profile = () => {
               </div>
 
               <div className="space-y-1 justify-center w-full mt-3 ml-3">
-                
+
                 <div>
                   <h2 className="text-xl leading-6 font-bold text-black">{data?.name} {data?.lastname}</h2>
                   <p className="text-sm leading-5 font-medium text-gray-600">@{data?.username}</p>
@@ -233,7 +233,7 @@ export const Profile = () => {
                   <IoCalendarOutline size={20} className="mt-5 ml-4" /> <p className="text-8px mt-5 font-medium text-gray-800 ml-2"> Joined {month(data?.created_at)}</p>
                   <IoGiftOutline size={20} className="mt-5 ml-4" /> <p className="text-8px mt-5 font-medium text-gray-800 ml-2"> Born {month(data?.birthdate)}</p>
                 </div>
-    
+
                 <div className="mt-3">
                   <p className="text-black leading-tight mb-4">{data?.biography}</p>
                   {/* <div className="text-gray-600 flex">
@@ -285,7 +285,7 @@ export const Profile = () => {
           {
             section === "posts" && (
               <>
-                {posts &&
+                {posts.length > 0 ? (
                   posts?.map(post => <Card
                     key={post.post_id}
                     post={post}
@@ -295,6 +295,12 @@ export const Profile = () => {
                     setDeleteOnePost={setDeleteOnePost}
                     deleteOnePost={deleteOnePost}
                   />)
+                ) : (
+                  <div className="text-center mt-36">
+                    <p className="text-4xl mb-4">{ state?.user_id === user.uid ? "You don't have post yet" : "Don't have post yet"}</p>
+                    { state?.user_id === user.uid && <p>When you publish any post it appears here.</p>}
+                  </div>
+                )
                 }
                 {
                   forwarded &&
@@ -317,16 +323,22 @@ export const Profile = () => {
             section === "likes" && (
               <>
                 {
-                  likes &&
-                  likes?.map(like => <Card
-                    key={like.post_id}
-                    post={like}
-                    interactionLikes={interactionLikes}
-                    interactionForwarded={interactionForwarded}
-                    interactionBookmarks={interactionBookmarks}
-                    setDeleteOnePost={setDeleteOnePost}
-                    deleteOnePost={deleteOnePost}
-                  />)
+                  likes.length > 0 ? (
+                    likes?.map(like => <Card
+                      key={like.post_id}
+                      post={like}
+                      interactionLikes={interactionLikes}
+                      interactionForwarded={interactionForwarded}
+                      interactionBookmarks={interactionBookmarks}
+                      setDeleteOnePost={setDeleteOnePost}
+                      deleteOnePost={deleteOnePost}
+                    />)
+                  ) : (
+                    <div className="text-center mt-36">
+                      <p className="text-4xl mb-4">{ state?.user_id === user.uid ? "You don't have likes yet" : "Don't have likes yet"}</p>
+                      { state?.user_id === user.uid && <p>When you like any post it appears here.</p> }
+                    </div>
+                  )
                 }
               </>
             )
@@ -336,16 +348,22 @@ export const Profile = () => {
             section === "forwarded" && (
               <>
                 {
-                  forwarded &&
-                  forwarded.map(forwarded => <Card
-                    key={forwarded.post_id}
-                    post={forwarded}
-                    interactionLikes={interactionLikes}
-                    interactionForwarded={interactionForwarded}
-                    interactionBookmarks={interactionBookmarks}
-                    setDeleteOnePost={setDeleteOnePost}
-                    deleteOnePost={deleteOnePost}
-                  />)
+                  forwarded.length > 0 ? (
+                    forwarded.map(forwarded => <Card
+                      key={forwarded.post_id}
+                      post={forwarded}
+                      interactionLikes={interactionLikes}
+                      interactionForwarded={interactionForwarded}
+                      interactionBookmarks={interactionBookmarks}
+                      setDeleteOnePost={setDeleteOnePost}
+                      deleteOnePost={deleteOnePost}
+                    />)
+                  ) : (
+                    <div className="text-center mt-36">
+                      <p className="text-4xl mb-4">{ state?.user_id === user.uid ? "You don't have forwarded post yet": "Don't have forwarded post yet"}</p>
+                      { state?.user_id === user.uid && <p>When you forwarded any post it appears here.</p> }
+                    </div>
+                  )
                 }
               </>
 
@@ -356,34 +374,40 @@ export const Profile = () => {
             section === "followings" && (
               <div className="py-10">
                 {
-                  follow?.followings &&
-                  follow?.followings?.map((following) => (
-                    <div
-                      key={following.following_id}
-                      className="hover:bg-gray-100 bg-white cursor-pointer"
-                      onClick={() => nav(`/profile/${following.username}`, { state: { user_id: following.user_id } })}
-                    >
-                      <div className="flex items-start px-4 py-6">
-                        <img className="w-12 rounded-full object-cover mr-4 shadow" src={following.avatar} alt="avatar" />
-                        <div className="">
-                          <div className="flex items-center justify-between">
-                            <h2 className="text-lg font-semibold text-gray-900">{following.name} {following.lastname}</h2>
-                            <button
-                              onClick={() => nav(`/profile/${following.username}`, { state: { user_id: following.user_id } })}
-                              className={`${following.user_id === user.uid ? 'hidden' : 'cursor-pointer max-h-max whitespace-nowrap focus:outline-none focus:ring max-w-max border bg-transparent border-blue-500 text-blue-500 hover:border-blue-800 hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto'}`}
-                            >
-                              Visit profile
-                            </button>
-                          </div>
-                          <p className="text-gray-700 text-sm mb-4">@{following.username}</p>
+                  follow?.followings.length > 0 ? (
+                    follow?.followings?.map((following) => (
+                      <div
+                        key={following.following_id}
+                        className="hover:bg-gray-100 bg-white cursor-pointer"
+                        onClick={() => nav(`/profile/${following.username}`, { state: { user_id: following.user_id } })}
+                      >
+                        <div className="flex items-start px-4 py-6">
+                          <img className="w-12 rounded-full object-cover mr-4 shadow" src={following.avatar} alt="avatar" />
+                          <div className="">
+                            <div className="flex items-center justify-between">
+                              <h2 className="text-lg font-semibold text-gray-900">{following.name} {following.lastname}</h2>
+                              <button
+                                onClick={() => nav(`/profile/${following.username}`, { state: { user_id: following.user_id } })}
+                                className={`${following.user_id === user.uid ? 'hidden' : 'cursor-pointer max-h-max whitespace-nowrap focus:outline-none focus:ring max-w-max border bg-transparent border-blue-500 text-blue-500 hover:border-blue-800 hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto'}`}
+                              >
+                                Visit profile
+                              </button>
+                            </div>
+                            <p className="text-gray-700 text-sm mb-4">@{following.username}</p>
 
-                          <p className="text-gray-700 text-md">
-                            {following.biography}
-                          </p>
+                            <p className="text-gray-700 text-md">
+                              {following.biography ? following.biography : 'Esté usuario no tiene biografía, si quiere más información sobre el usuario entre en su perfil'}
+                            </p>
+                          </div>
                         </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="text-center mt-36">
+                      <p className="text-4xl mb-4">{ state?.user_id === user.uid ? "You aren't following to anyone yet" : "Is not following anyone yet" }</p>
+                      { state?.user_id === user.uid && <p>When you follow someone, they will appear here.</p> }
                     </div>
-                  ))
+                  )
                 }
               </div>
             )
@@ -393,41 +417,48 @@ export const Profile = () => {
             section === "followers" && (
               <div className="py-10">
                 {
-                  follow?.followers &&
-                  follow?.followers?.map((follower) => (
-                    <div
-                      key={follower.follower_id}
-                      className="hover:bg-gray-100 bg-white cursor-pointer"
-                      onClick={() => nav(`/profile/${follower.username}`, { state: { user_id: follower.user_id } })}
-                    >
-                      <div className="flex items-start px-4 py-6">
-                        <img className="w-12 rounded-full object-cover mr-4 shadow" src={follower.avatar} alt="avatar" />
-                        <div className="">
-                          <div className="flex items-center justify-between">
-                            <h2 className="text-lg font-semibold text-gray-900">{follower.name} {follower.lastname}</h2>
-                            <button
-                              onClick={() => nav(`/profile/${follower.username}`, { state: { user_id: follower.user_id } })}
-                              className={`${follower.user_id === user.uid ? 'hidden' : 'max-h-max whitespace-nowrap focus:outline-none focus:ring max-w-max border bg-transparent border-blue-500 text-blue-500 hover:border-blue-800 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto'}`}
-                            >
-                              Visit profile
-                            </button>
-                          </div>
-                          <div className="flex">
-                            <p className="text-gray-700 text-sm mb-4">@{follower.username}</p>
-                            <div className="rounded-md bg-slate-500 px-3 py-1.5 ml-2 uppercase text-white">
-                              <p className="font-sans text-sm font-medium capitalize leading-none text-white antialiased">
-                                Follows you
-                              </p>
-                            </div>
-                          </div>
+                  follow?.followers.length > 0 ? (
 
-                          <p className="text-gray-700 text-md">
-                            {follower.biography}
-                          </p>
+                    follow?.followers?.map((follower) => (
+                      <div
+                        key={follower.follower_id}
+                        className="hover:bg-gray-100 bg-white cursor-pointer"
+                        onClick={() => nav(`/profile/${follower.username}`, { state: { user_id: follower.user_id } })}
+                      >
+                        <div className="flex items-start px-4 py-6">
+                          <img className="w-12 rounded-full object-cover mr-4 shadow" src={follower.avatar} alt="avatar" />
+                          <div className="">
+                            <div className="flex items-center justify-between">
+                              <h2 className="text-lg font-semibold text-gray-900">{follower.name} {follower.lastname}</h2>
+                              <button
+                                onClick={() => nav(`/profile/${follower.username}`, { state: { user_id: follower.user_id } })}
+                                className={`${follower.user_id === user.uid ? 'hidden' : 'max-h-max whitespace-nowrap focus:outline-none focus:ring max-w-max border bg-transparent border-blue-500 text-blue-500 hover:border-blue-800 flex items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto'}`}
+                              >
+                                Visit profile
+                              </button>
+                            </div>
+                            <div className="flex">
+                              <p className="text-gray-700 text-sm mb-4">@{follower.username}</p>
+                              <div className="rounded-md bg-slate-500 px-3 py-1.5 ml-2 uppercase text-white">
+                                <p className="font-sans text-sm font-medium capitalize leading-none text-white antialiased">
+                                  Follows you
+                                </p>
+                              </div>
+                            </div>
+
+                            <p className="text-gray-700 text-md">
+                              {follower.biography ? follower.biography : 'Esté usuario no tiene biografía, si quiere más información sobre el usuario entre en su perfil'}
+                            </p>
+                          </div>
                         </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="text-center mt-36">
+                      <p className="text-4xl mb-4">{ state?.user_id === user.uid ? "You aren't follower to anyone yet" : "Is not follower to anyone yet" }</p>
+                      { state?.user_id === user.uid && <p>When you follow someone, they will appear here.</p> }
                     </div>
-                  ))
+                  )
                 }
               </div>
             )
