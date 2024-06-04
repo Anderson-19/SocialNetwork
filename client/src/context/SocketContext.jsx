@@ -3,7 +3,7 @@ import { useUserStore } from "../store";
 import io from "socket.io-client";
 
 const SocketContext = createContext();
-
+const URL = 'https://socialnetwork-server-production.up.railway.app';
 export const useSocketContext = () => {
 	return useContext(SocketContext);
 };
@@ -15,7 +15,7 @@ export const SocketContextProvider = ({ children }) => {
 
 	useEffect(() => {
 		if (user) {
-			const socket = io("http://localhost:8000", {
+			const socket = io(import.meta.env.VITE_API_URL, {
 				query: {
 					userId: user.uid,
 				},
