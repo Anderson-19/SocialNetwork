@@ -21,5 +21,7 @@ Por ultimo, los usuarios que se siguen podran conversar en tiempo real mediante 
 ## Correr el cliente en desarrollo
 
 1. Clonar repositorio
-2. Instalar las dependencias ```npm install```
-3. Correr el servidor ```npm run dev```
+2. Crear una copia de el archivo ```.env.template``` y reemplazarlo a ```.env```
+3. Reemplazar la variable de entorno
+4. Instalar las dependencias ```npm install```
+5. Correr el servidor ```npm run dev```
