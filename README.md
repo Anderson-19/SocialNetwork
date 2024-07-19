@@ -27,4 +27,4 @@ Por ultimo, los usuarios que se siguen podran conversar en tiempo real mediante 
 5. Correr el servidor ```npm run dev```
 
 
-## App en producción: ```https://socialnetwork-client-production.up.railway.app/```
+# App en producción: https://socialnetwork-client-production.up.railway.app
