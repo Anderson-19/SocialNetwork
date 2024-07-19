@@ -3,9 +3,9 @@ import { persist } from "zustand/middleware";
 
 export const useConversation = create(
 	persist(
-		(set, get) => ({
+		(set) => ({
 			selectedConversation: null,
-			messages: [''],
+			messages: [],
 
 			setSelectedConversation: (selectedConversation) => set({ selectedConversation }),
 			setMessages: (messages) => set({ messages })

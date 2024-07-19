@@ -10,7 +10,7 @@ export const App = () => {
 
   const location = useLocation();
 
-  if (!user.isLogged) {
+  if (!user.isLogged || !localStorage.getItem("token")) {
     return <Navigate to="/" />;
   }
 

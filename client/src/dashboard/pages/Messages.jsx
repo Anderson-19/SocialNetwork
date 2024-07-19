@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { getFollowersAndFollowing, getMessages, getUsers, sendMessage } from "../../api";
+import { getFollowersAndFollowing, getMessages, sendMessage } from "../../api";
 import { IoSendOutline } from "react-icons/io5";
 import { useConversation, useUserStore } from "../../store";
 import { useForm } from "react-hook-form";
@@ -16,22 +16,31 @@ export const Messages = () => {
   const { register, handleSubmit, resetField } = useForm();
 
   const { user } = useUserStore(state => state);
-	const { socket } = useSocketContext();
+  const { socket, onlineUsers } = useSocketContext();
+
+  const lastMessageRef = useRef();
 
   const onSubmit = async (data) => {
 
     if (!data.message) return;
 
-    await sendMessage(data.message, user.uid, userChat?.user_id, selectedConversation);
-    setMessages([...messages, data.message]);
-    resetField("message");
+    const message = await sendMessage(data.message, user.uid, userChat?.user_id, selectedConversation);
+
+    if(messages?.length === undefined){ 
+      setMessages([message]);
+      resetField("message"); 
+    } else {
+      setMessages([...messages, message]);
+      resetField("message"); 
+    }
+
   }
 
   useEffect(() => {
     getFollowersAndFollowing(user.token, user.uid)
       .then(res => setUsers(res))
       .catch(console.log)
-  }, [userChat, setUserChat]);
+  }, [userChat, setUserChat, user]);
 
   useEffect(() => {
     getMessages(user.uid, userChat?.user_id)
@@ -41,24 +50,26 @@ export const Messages = () => {
         setMessages(res.messages);
       })
       .catch(console.log)
-  }, [userChat, setUserChat, messages ])
+  }, [userChat, setUserChat, messages, setMessages, socket, setSelectedConversation, user]);
 
   useEffect(() => {
-		socket?.on("newMessage", (newMessage) => {
-			newMessage.shouldShake = true;
-			setMessages([...messages, newMessage]);
-		});
+    socket?.on("newMessage", (newMessage) => {
+      newMessage.shouldShake = true;
+      if(messages?.length === undefined){ 
+        setMessages([newMessage]); 
+      } else {
+        setMessages([...messages, newMessage]);
+      }
+    });
 
-		return () => socket?.off("newMessage");
-	}, [socket, setMessages, messages]);
+    return () => socket?.off("newMessage");
+  }, [socket, setMessages, messages]);
 
-  const lastMessageRef = useRef();
-
-	useEffect(() => {
-		setTimeout(() => {
-			lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
-		}, 100);
-	}, [messages]);
+  useEffect(() => {
+    setTimeout(() => {
+      lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  }, [socket, setMessages, messages]);
 
   return (
     <div className="h-full w-full flex items-center justify-center">
@@ -76,9 +87,9 @@ export const Messages = () => {
                 className={`px-5 py-4 flex items-center ${user.uid === u.user_id ? 'hidden' : 'cursor-pointer border-l-4 border-l-transparent hover:bg-slate-100'}`}
               >
                 <img src={u.avatar}
-                  className={`h-12 w-12 border-2 ${ u.connected ? 'border-green-300' : 'border-white' } rounded-full`} alt="" />
+                  className={`h-12 w-12 border-2 ${onlineUsers.find(onlineUser => onlineUser === u.user_id) ? 'border-green-300' : 'border-white'} rounded-full`} alt="" />
                 <div className="ml-4">
-                  <p x-text="user.name" className="text-md font-semibold text-slate-600 m-0 p-0">{u.name}</p>
+                  <p className="text-md font-semibold text-slate-600 m-0 p-0">{u.name}</p>
                 </div>
               </div>
             ))
@@ -97,13 +108,14 @@ export const Messages = () => {
           </div>
         </div>
 
-        <div className="overflow-x-hidden overflow-y-scroll scroll-ui flex flex-col">
+        <div className="overflow-x-hidden overflow-y-scroll scroll-ui flex-1 overflow-auto">
 
           <div className={`${userChat ? "h-full px-10 py-4" : "hidden"}`}>
 
             {
-              messages?.map((message) => (
-                <div key={message?.message_id}>
+              messages?.length > 0 &&
+              messages.map((message, index) => (
+                <div key={index}>
 
                   <div className={`w-full flex ${user.uid === message?.receiver_id ? 'justify-start' : 'justify-end'} mt-3`}>
                     <div className="w-1/2 ">
@@ -133,9 +145,9 @@ export const Messages = () => {
         </div>
 
 
-        <div className={`${userChat ? "h-1/4" : "hidden"}`}>
+        <div className={`${userChat ? "h-1/6" : "hidden"}`}>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="w-full px-5 py-3">
+          <form onSubmit={handleSubmit(onSubmit)} className="w-full px-5 py-3 mx-auto">
             <div className="h-12 flex justify-between px-3 items-center border border-transparent bg-slate-50 focus-within:border-slate-300 rounded-lg">
               <input
                 type="text"

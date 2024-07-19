@@ -3,7 +3,7 @@ import { useUserStore } from "../store";
 import io from "socket.io-client";
 
 const SocketContext = createContext();
-const URL = 'https://socialnetwork-server-production.up.railway.app';
+//const URL = 'https://socialnetwork-server-production.up.railway.app';
 export const useSocketContext = () => {
 	return useContext(SocketContext);
 };
@@ -34,7 +34,7 @@ export const SocketContextProvider = ({ children }) => {
 				setSocket(null);
 			}
 		}
-	}, [user]);
+	}, [user, setSocket]);
 
 	return <SocketContext.Provider value={{ socket, onlineUsers }}>{children}</SocketContext.Provider>;
 };

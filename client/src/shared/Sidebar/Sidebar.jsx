@@ -1,9 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import {
     IoHomeOutline,
-    IoNotificationsOutline,
     IoSendOutline,
     IoBookmarkOutline,
     IoPersonOutline,
@@ -30,7 +29,7 @@ export const Sidebar = () => {
     }
 
     return (
-        <div className="h-full lg:mx-10 pt-10 max-sm:w-0 md:min-w-fit max-[770px]:hidden">
+        <div className="h-full lg:mx-10 pt-10 max-sm:w-0 md:min-w-fit max-[1000px]:hidden">
             <div className={`mt-4 py-1.5 text-lg font-medium ${selectPage('home')} hover:text-blue-500 group cursor-pointer flex justify-start`} onClick={() => { setProfile(false); nav('/home'); }}>
                 <IoHomeOutline size={25} />
                 <p className="ml-3">Home</p>

@@ -27,6 +27,7 @@ export const Login = () => {
         isLogged: true,
         ...rest
       });
+      localStorage.setItem("token", rest.token);
       setLoading(ok);
       nav('/home');
     } catch (error) {
