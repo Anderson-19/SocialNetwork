@@ -21,11 +21,9 @@ const sendMessage = async (req = request, res = response) => {
             const newMessage = await getMessageId(messageId);
 
             const receiverSocketId = getReceiverSocketId(receiverId);
-            if (receiverSocketId) { 
-                io.to(receiverId).emit("newMessage", newMessage);
-            }
-
-            res.status(201).json(newMessage);
+                     
+            io.emit("newMessage", newMessage.rows[0]);
+            res.status(201).json(newMessage.rows[0]);
         }
 
         const messagesArray = conversation.rows[0]?.messages.replace('{', '[').replace('}', ']');
@@ -43,12 +41,9 @@ const sendMessage = async (req = request, res = response) => {
         const newMessage = await getMessageId(messageId);
         const receiverSocketId = getReceiverSocketId(receiverId);
 
-        if (receiverSocketId) {
-            io.to(receiverSocketId).emit("newMessage", newMessage);
-        }
-
-        res.status(201).json(newMessage);
-
+        io.emit("newMessage", newMessage.rows[0]);
+        res.status(201).json(newMessage.rows[0]);
+        
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Internal server error" });
