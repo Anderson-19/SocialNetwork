@@ -25,3 +25,6 @@ Por ultimo, los usuarios que se siguen podran conversar en tiempo real mediante 
 3. Reemplazar la variable de entorno
 4. Instalar las dependencias ```npm install```
 5. Correr el servidor ```npm run dev```
+
+
+## App en producción: ```https://socialnetwork-client-production.up.railway.app/```
