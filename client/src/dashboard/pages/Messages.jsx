@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { getFollowersAndFollowing, getMessages, sendMessage } from "../../api";
 import { IoSendOutline } from "react-icons/io5";
 import { useConversation, useUserStore } from "../../store";
@@ -17,8 +17,6 @@ export const Messages = () => {
 
   const { user } = useUserStore(state => state);
   const { socket, onlineUsers } = useSocketContext();
-
-  const lastMessageRef = useRef();
 
   const onSubmit = async (data) => {
 
@@ -63,12 +61,6 @@ export const Messages = () => {
     });
 
     return () => socket?.off("newMessage");
-  }, [socket, setMessages, messages]);
-
-  useEffect(() => {
-    setTimeout(() => {
-      lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, 100);
   }, [socket, setMessages, messages]);
 
   return (
